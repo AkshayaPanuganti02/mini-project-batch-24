@@ -1,0 +1,18 @@
+def split_df(df, n_folds=5, training_fold=0):
+    mapping = df.groupby("id")['img_path'].agg(len).to_dict()
+    df['stratify'] = df['id'].map(mapping)
+
+    kfold = StratifiedGroupKFold(
+        n_splits=n_folds, shuffle=True, random_state=42)
+
+    for i, (_, val_idx) in enumerate(kfold.split(df, y=df['stratify'], groups=df['id'])):
+        df.loc[val_idx, 'fold'] = i
+
+    train_df = df[df['fold'] != training_fold].reset_index(drop=True)
+    valid_df = df[df['fold'] == training_fold].reset_index(drop=True)
+
+    return train_df, valid_df
+    
+    train_df, valid_df = split_df(df)
+print("Train size: ", train_df['id'].nunique())
+print("Valid size: ", valid_df['id'].nunique())
