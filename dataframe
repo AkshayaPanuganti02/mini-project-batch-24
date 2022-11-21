@@ -98,3 +98,10 @@ def build_df(xml_files):
     df = df[['id', 'label', 'xmin', 'ymin', 'xmax', 'ymax', 'img_path']]
     
     return df, classes
+
+df, classes = build_df(XML_FILES)
+cls2id = {cls_name: i for i, cls_name in enumerate(classes)}
+id2cls = {i: cls_name for i, cls_name in enumerate(classes)}
+
+print(len(classes))
+df.head()
